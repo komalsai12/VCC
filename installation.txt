@@ -1,0 +1,36 @@
+Here,we have done our implementation using the docker container.
+Firstly,we need to install the docker machine using the following commands:
+$sudo apt-get install /
+>apt-transport-https /
+>ca-certificates /
+>curl
+$curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+$sudo add-apt-repository 
+>"deb [arch=amd64] https://download.docker.com/linux/ubuntu 
+>$(lsb_release -cs) 
+>stable"
+$sudo apt-get update
+$sudo apt-get install docker-ce
+
+Then,we need to install the docker machine using the following commands:
+$base=https://github.com/docker/machine/releases/download/v0.14.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+$docker-machine version
+
+Then,create the manager nodes and 2 worker nodes as follows:
+$docker-machine create --driver virtualbox manager
+$docker-machine create --driver virtualbox worker-1
+$docker-machine create --driver virtualbox worker-2
+
+Configuring the swarm cluster on these nodes
+$docker run swarm create
+Now we will add the master node to this cluster using:
+$export discotoken=0360ff24c3119a7e1cadd439db981233
+$docker-machine create     -d virtualbox     --swarm     --swarm-master     --swarm-discovery token://$discotoken     swarm-manager
+
+Now we will be adding the worker node to the swarm using:
+$docker-machine-Linux-x86_64 create \
+    -d virtualbox \
+    --swarm \
+    --swarm-discovery token://$discotoken \
+    node-01
+Finally,building a docker container,as docker file.txt
